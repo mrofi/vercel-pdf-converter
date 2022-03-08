@@ -73,7 +73,7 @@ export const getOptions = async (isDev) => {
 	}
 }
 
-export const getPdf = async (url) => {
+export const getPdf = async (url, screen = true) => {
 	// Start headless chrome instance
 	const options = await getOptions(isDev)
 	const browser = await puppeteer.launch(options)
@@ -106,7 +106,7 @@ export const getPdf = async (url) => {
 	})
 
 	// Tell Chrome to generate the PDF
-	await page.emulateMediaType('screen')
+	screen && await page.emulateMediaType('screen')
 	const buffer = await page.pdf({
 		format: 'A4',
 		displayHeaderFooter: true,
@@ -124,5 +124,5 @@ export const getPdf = async (url) => {
 export const getPdfFromHtml = async (html) => {
 	const url = `data:text/html;base64;charset=UTF-8,${ Buffer.from(html).toString('base64') }`
 
-	return await getPdf(url)
+	return await getPdf(url, false)
 }
