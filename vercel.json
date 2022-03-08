@@ -1,6 +1,6 @@
 {
 	"rewrites": [
-		{ "source": "/convert/", "destination": "/api/convert.js" },
+		{ "source": "/convert", "destination": "/api/convert.js" },
 		{ "source": "/(.*)", "destination": "/api" }
 	]
 }
