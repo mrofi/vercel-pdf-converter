@@ -73,7 +73,7 @@ export const getOptions = async (isDev) => {
 	}
 }
 
-export const start = async (callback) => {
+export const getPdf = async (url) => {
 	// Start headless chrome instance
 	const options = await getOptions(isDev)
 	const browser = await puppeteer.launch(options)
@@ -85,7 +85,7 @@ export const start = async (callback) => {
 
 	const page = await browser.newPage()
 
-	callback(page)
+	await page.goto(url, { waitUntil: 'networkidle2', timeout: 8000 })
 
 	// Scroll to bottom of page to force loading of lazy loaded images
 	await page.evaluate(async () => {
@@ -121,16 +121,8 @@ export const start = async (callback) => {
 	return buffer
 }
 
-export const getPdf = async (url) => {
-	return await start(async (page) => {
-		// Visit URL and wait until everything is loaded (available events: load, domcontentloaded, networkidle0, networkidle2)
-		await page.goto(url, { waitUntil: 'networkidle2', timeout: 8000 })
-	})
-}
-
 export const getPdfFromHtml = async (html) => {
-	return await start(async (page) => {
-		// Visit URL and wait until everything is loaded (available events: load, domcontentloaded, networkidle0, networkidle2)
-		await page.setContent(html, { waitUntil: 'networkidle2', timeout: 8000 })
-	})
+	const url = `data:text/html;base64;charset=UTF-8,${ Buffer.from(html).toString('base64') }`
+
+	return await getPdf(url)
 }
