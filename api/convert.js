@@ -24,6 +24,10 @@ module.exports = async (req, res) => {
 		// Instruct browser to cache PDF for maxAge ms
 		if (process.env.NODE_ENV !== 'development') res.setHeader('Cache-control', `public, max-age=${ maxAge }`)
 
+		// allow cors
+		res.setHeader('Access-Control-Allow-Credentials', true)
+		res.setHeader('Access-Control-Allow-Origin', '*')
+
 		// Set Content type to PDF and send the PDF to the client
 		res.setHeader('Content-type', 'application/pdf')
 		res.send(pdfBuffer)
